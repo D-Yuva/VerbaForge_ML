@@ -1,33 +1,57 @@
 import re
-''' Exctract video gives the video id from both yt video link and yt share link '''
+from youtube_transcript_api import YouTubeTranscriptApi
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+
+# Extract video ID from YouTube URL
 def extract_video_id(url):
-
     pattern = r'(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})'
-
     match = re.search(pattern, url)
-
     return match.group(1) if match else None
-url = str(input("Enter youtube link: "))
+
+url = input("Enter YouTube link: ")
 video_id = extract_video_id(url)
 
-from youtube_transcript_api import YouTubeTranscriptApi
-
-api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
-
 try:
+    # Retrieve transcript
     transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en", "es", "fr", "de", "it", "pt"])
-except:
-    transcript = "Transcript unavailable. Consider using a different method for transcript retrieval."
+except Exception as e:
+    transcript = None
+    print(f"Error: {e}")
+    print("Transcript unavailable. Consider using a different method for transcript retrieval.")
 
-print()
-print(transcript)
+if transcript:
 
-preprocessed_text = ""
-for segment in transcript:
-    preprocessed_text += segment['text'] + " "
+    # Fetch video title using YouTube Data API
+    api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
+    youtube = build('youtube', 'v3', developerKey=api_key)
 
-preprocessed_text = preprocessed_text.replace("[TIMESTAMP]", "")
+    try:
+        video_response = youtube.videos().list(
+            part='snippet',
+            id=video_id
+        ).execute()
 
-print()
-print(preprocessed_text)
-dialogue_text = preprocessed_text
+        video_title = video_response['items'][0]['snippet']['title']
+        print(f"\nVideo Title: {video_title}")
+
+    except HttpError as e:
+        print(f"Error fetching video title: {e}")    
+    print("\nTranscript:\n")
+    transcript_without_duration = []
+    for segment in transcript:
+        start_time = segment['start']
+        minutes = int(start_time // 60)
+        seconds = int(start_time % 60)
+        text = segment['text']
+        formatted_text = f"[{minutes:02d}:{seconds:02d}] {text}"
+        transcript_without_duration.append(formatted_text)
+        print(formatted_text)
+
+    # Preprocess text by concatenating all segments
+    preprocessed_text = " ".join([segment['text'] for segment in transcript])
+    print("\nPreprocessed Transcript Text:\n")
+    print(preprocessed_text)
+
+else:
+    print("No transcript available.")
