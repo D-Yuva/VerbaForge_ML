@@ -13,6 +13,7 @@ def extract_video_id(url):
 url = input("Enter YouTube link: ")
 video_id = extract_video_id(url)
 
+ # Fetch video title using YouTube Data API
 api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
 youtube = build('youtube', 'v3', developerKey=api_key)
 
@@ -37,7 +38,7 @@ try:
         
 except HttpError as e:
         print(f"Error fetching video title: {e}") 
-
+'''
 try:
     # Retrieve transcript
     transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en", "es", "fr", "de", "it", "pt"])
@@ -47,10 +48,7 @@ except Exception as e:
     print("Transcript unavailable. Consider using a different method for transcript retrieval.")
 
 #if transcript:
-
-    # Fetch video title using YouTube Data API
     
-'''       
     print("\nTranscript:\n")
     transcript_without_duration = []
     for segment in transcript:

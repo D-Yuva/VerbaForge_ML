@@ -2,9 +2,9 @@ import google.generativeai as genai
 import os
 from pytube import YouTube
 import time
-from youtube_extraction import url
+from youtube_extraction import url, total_duration
 import google
-from youtube_extraction import formatted_text
+import time
 
 # Set your Google API Key here
 GOOGLE_API_KEY = 'AIzaSyBPvhyyElfd-l2-tg1xDwVDSQ-7DQgNAvg'
@@ -50,14 +50,23 @@ print()
 response = model.generate_content([prompt_sum, video_file], request_options={"timeout": 600})
 print(response.text)
 
-# Create the prompt.
-prompt = "What are the examples given at 01:05 and 01:19 supposed to show us?"
+def format_time(seconds):
+    minutes, seconds = divmod(seconds, 60)
+    return f"{minutes:02d}:{seconds:02d}"
 
-# Choose a Gemini model.
-model = genai.GenerativeModel(model_name="gemini-1.5-pro")
-
-# Make the LLM request.
-print("Making LLM inference request...")
-response = model.generate_content([prompt, video_file],
-                                  request_options={"timeout": 600})
-print(response.text)
+for i in range(8):
+    start_time = i * (total_duration // 8)
+    end_time = (i + 1) * (total_duration // 8) if i < 7 else total_duration
+    prompt = f"What emotions is shown from {format_time(start_time)} to {format_time(end_time)}"
+    
+    print(f"{format_time(start_time)} to {format_time(end_time)}")
+    try:
+        response = model.generate_content([prompt, video_file], request_options={"timeout": 600})
+        print(response.text)
+    except google.api_core.exceptions.ResourceExhausted:
+        print("Quota exceeded. Waiting for 60 seconds before retrying...")
+        time.sleep(60)  # Wait for 60 seconds before retrying
+        response = model.generate_content([prompt, video_file], request_options={"timeout": 600})
+        print(response.text)
+    
+    print("\n")
