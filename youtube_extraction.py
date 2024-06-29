@@ -2,6 +2,7 @@ import re
 from youtube_transcript_api import YouTubeTranscriptApi
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from pytube import YouTube
 
 # Extract video ID from YouTube URL
 def extract_video_id(url):
@@ -12,21 +13,10 @@ def extract_video_id(url):
 url = input("Enter YouTube link: ")
 video_id = extract_video_id(url)
 
+api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
+youtube = build('youtube', 'v3', developerKey=api_key)
+
 try:
-    # Retrieve transcript
-    transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en", "es", "fr", "de", "it", "pt"])
-except Exception as e:
-    transcript = None
-    print(f"Error: {e}")
-    print("Transcript unavailable. Consider using a different method for transcript retrieval.")
-
-if transcript:
-
-    # Fetch video title using YouTube Data API
-    api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
-    youtube = build('youtube', 'v3', developerKey=api_key)
-
-    try:
         video_response = youtube.videos().list(
             part='snippet',
             id=video_id
@@ -35,8 +25,32 @@ if transcript:
         video_title = video_response['items'][0]['snippet']['title']
         print(f"\nVideo Title: {video_title}")
 
-    except HttpError as e:
-        print(f"Error fetching video title: {e}")    
+        def get_video_duration(url):
+            yt = YouTube(url)
+            duration = yt.length  # Duration in seconds
+            minutes, seconds = divmod(duration, 60)
+            return f"{minutes} minutes and {seconds} seconds", duration
+
+        video_duration, total_duration = get_video_duration(url)
+        print()
+        print(f"Video Duration: {video_duration}")
+        
+except HttpError as e:
+        print(f"Error fetching video title: {e}") 
+
+try:
+    # Retrieve transcript
+    transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en", "es", "fr", "de", "it", "pt"])
+except Exception as e:
+    transcript = None
+    print(f"Error: {e}")
+    print("Transcript unavailable. Consider using a different method for transcript retrieval.")
+
+#if transcript:
+
+    # Fetch video title using YouTube Data API
+    
+'''       
     print("\nTranscript:\n")
     transcript_without_duration = []
     for segment in transcript:
@@ -55,3 +69,4 @@ if transcript:
 
 else:
     print("No transcript available.")
+'''

@@ -4,6 +4,7 @@ from pytube import YouTube
 import time
 from youtube_extraction import url
 import google
+from youtube_extraction import formatted_text
 
 # Set your Google API Key here
 GOOGLE_API_KEY = 'AIzaSyBPvhyyElfd-l2-tg1xDwVDSQ-7DQgNAvg'
@@ -35,7 +36,7 @@ if video_file.state.name == "FAILED":
 print(f'Video processing complete: {video_file.uri}')
 
 # Create the prompt
-prompt = "Describe this video, generate it like a summary."
+prompt_sum = "Describe this video, generate it like a summary."
 
 # Set the model to Gemini 1.5 Flash
 model = genai.GenerativeModel(model_name="models/gemini-1.5-pro")
@@ -46,6 +47,17 @@ print("Making LLM inference request...")
 print()
 print("Summary")
 print()
-response = model.generate_content([prompt, video_file], request_options={"timeout": 600})
+response = model.generate_content([prompt_sum, video_file], request_options={"timeout": 600})
 print(response.text)
 
+# Create the prompt.
+prompt = "What are the examples given at 01:05 and 01:19 supposed to show us?"
+
+# Choose a Gemini model.
+model = genai.GenerativeModel(model_name="gemini-1.5-pro")
+
+# Make the LLM request.
+print("Making LLM inference request...")
+response = model.generate_content([prompt, video_file],
+                                  request_options={"timeout": 600})
+print(response.text)
