@@ -3,6 +3,7 @@ import os
 from pytube import YouTube
 import time
 from youtube_extraction import url
+import google
 
 # Set your Google API Key here
 GOOGLE_API_KEY = 'AIzaSyBPvhyyElfd-l2-tg1xDwVDSQ-7DQgNAvg'
@@ -48,6 +49,3 @@ print()
 response = model.generate_content([prompt, video_file], request_options={"timeout": 600})
 print(response.text)
 
-# Delete the file after processing
-genai.delete_file(video_file.name)
-print(f'Deleted file {video_file.uri}')
