@@ -14,7 +14,7 @@ url = input("Enter YouTube link: ")
 video_id = extract_video_id(url)
 
  # Fetch video title using YouTube Data API
-api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
+api_key = "AIzaSyBPpShSmXuu4sfmkD8PjCaEN-UrQ59G4SI"
 youtube = build('youtube', 'v3', developerKey=api_key)
 
 try:

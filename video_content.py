@@ -1,19 +1,24 @@
-import google.generativeai as genai
 import os
-from pytube import YouTube
 import time
+import yt_dlp as youtube_dl
+import google.generativeai as genai
 from youtube_extraction import url, total_duration
-import google
+import google.api_core.exceptions
 
 # Set your Google API Key here
-GOOGLE_API_KEY = 'AIzaSyBPvhyyElfd-l2-tg1xDwVDSQ-7DQgNAvg'
+GOOGLE_API_KEY = 'AIzaSyBHhq8EjXKqTXXrNXoCZ0m4Mpi1iXbAkTs'
 os.environ['GOOGLE_API_KEY'] = GOOGLE_API_KEY
 genai.configure(api_key=GOOGLE_API_KEY)
 
+# Function to download YouTube video using yt-dlp
 def download_youtube_video(yt_url, download_path='./'):
-    yt = YouTube(yt_url)
-    stream = yt.streams.get_highest_resolution()
-    file_path = stream.download(output_path=download_path)
+    ydl_opts = {
+        'format': 'best',
+        'outtmpl': os.path.join(download_path, '%(title)s.%(ext)s'),
+    }
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(yt_url, download=True)
+        file_path = ydl.prepare_filename(info_dict)
     return file_path
 
 # Example YouTube URL
@@ -78,7 +83,9 @@ for i in range(4):
         print("Failed to get a response after multiple attempts.")
 
 # Generate script for another creator based on summary and emotion analysis
-prompt_script = "Generate a YouTube script for another creator that is similar in content with timestamps, including emotions and background activities. Finally, suggest similar contents on the internet."
+script_time = input("How long should the script be: ")
+cultural_reference = input("What areas cultural references you want to consider: ")
+prompt_script = f"Generate a YouTube script for another creator that is similar in content with timestamps, including emotions and background activities. Generate script starting from 0:00 and end at  {script_time}.00, in the script make sure {cultural_reference} movie reference, {cultural_reference} meme reference, few {cultural_reference} words in between, make the script sound very {cultural_reference} and anything related to {cultural_reference} must be added to the script. Finally, suggest similar contents on the internet."
 
 retry_count = 0
 response_script = None
