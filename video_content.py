@@ -6,7 +6,7 @@ from youtube_extraction import url, total_duration
 import google.api_core.exceptions
 
 # Set your Google API Key here
-GOOGLE_API_KEY = 'AIzaSyBHhq8EjXKqTXXrNXoCZ0m4Mpi1iXbAkTs'
+GOOGLE_API_KEY = 'YOUR_GEMINI_API_KEY'
 os.environ['GOOGLE_API_KEY'] = GOOGLE_API_KEY
 genai.configure(api_key=GOOGLE_API_KEY)
 
