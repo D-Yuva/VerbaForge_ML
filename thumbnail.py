@@ -12,13 +12,13 @@ import matplotlib.pyplot as plt
 from youtube_extraction import url, video_id
 
 # API Key
-GOOGLE_API_KEY = 'YOUR_API_KEY'
+GOOGLE_API_KEY = 'YOUR_GEMINI_API_KEY'
 genai.configure(api_key=GOOGLE_API_KEY)
 
 
 def get_video_title(video_idd):
     # Fetch video title using YouTube Data API
-    api_key = "AIzaSyDKoPwoNghCBxwjEEGuLwG8GjzegNHomPI"
+    api_key = "YOUR_YOUTUBE_API_KEY"
     youtube = build('youtube', 'v3', developerKey=api_key)
     try:
         video_response = youtube.videos().list(
