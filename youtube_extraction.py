@@ -38,33 +38,3 @@ try:
         
 except HttpError as e:
         print(f"Error fetching video title: {e}") 
-'''
-try:
-    # Retrieve transcript
-    transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=["en", "es", "fr", "de", "it", "pt"])
-except Exception as e:
-    transcript = None
-    print(f"Error: {e}")
-    print("Transcript unavailable. Consider using a different method for transcript retrieval.")
-
-#if transcript:
-    
-    print("\nTranscript:\n")
-    transcript_without_duration = []
-    for segment in transcript:
-        start_time = segment['start']
-        minutes = int(start_time // 60)
-        seconds = int(start_time % 60)
-        text = segment['text']
-        formatted_text = f"[{minutes:02d}:{seconds:02d}] {text}"
-        transcript_without_duration.append(formatted_text)
-        print(formatted_text)
-
-    # Preprocess text by concatenating all segments
-    preprocessed_text = " ".join([segment['text'] for segment in transcript])
-    print("\nPreprocessed Transcript Text:\n")
-    print(preprocessed_text)
-
-else:
-    print("No transcript available.")
-'''
