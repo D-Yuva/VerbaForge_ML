@@ -60,7 +60,7 @@ def generate_from_thumb(thumbnail_name,script,prompt):
 
     # Prompt the model with text and the previously uploaded image.
     text_response = model.generate_content([thumb, text_prompt])
-    image_response = model.generate_content([thumb,image_prompt])
+    #image_response = model.generate_content([thumb,image_prompt])
 
     #send image response as a new prompt to image gen
     image = generate_image(image)
