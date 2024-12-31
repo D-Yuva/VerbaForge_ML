@@ -73,7 +73,7 @@ def generate_image(prompt):
   image_gen_model = "stabilityai/stable-diffusion-xl-base-1.0"
   pipe = StableDiffusionPipeline.from_pretrained(image_gen_model, torch_dtype=torch.float16, use_safetensors=True)
   pipe = pipe.to("cuda")
-  image = pipe(prompt).images[0]
+  #image = pipe(prompt).images[0]
   print("[PROMPT]: ",prompt)
   
 
