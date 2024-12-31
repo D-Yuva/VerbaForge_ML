@@ -12,7 +12,7 @@ while True:
         break
     else:
         print("Please enter a valid language code from the list provided.")
-        continue
+
 
 
 translated_text = GoogleTranslator(source='auto', target=target_language_code).translate(preprocessed_text)
