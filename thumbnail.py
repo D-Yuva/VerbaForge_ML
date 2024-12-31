@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from youtube_extraction import url, video_id
 
 # API Key
-GOOGLE_API_KEY = 'AIzaSyBPvhyyElfd-l2-tg1xDwVDSQ-7DQgNAvg'
+GOOGLE_API_KEY = 'YOUR_API_KEY'
 genai.configure(api_key=GOOGLE_API_KEY)
 
 
